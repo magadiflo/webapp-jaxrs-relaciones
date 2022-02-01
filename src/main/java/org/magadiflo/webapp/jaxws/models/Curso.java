@@ -1,9 +1,11 @@
 package org.magadiflo.webapp.jaxws.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement //Solo va cuando se trabaja con XML. Para JSON no va, es en automático
+//@XmlRootElement //Solo va cuando se trabaja con XML. Para JSON no va, es en automático
 @Entity
 @Table(name = "cursos")
 public class Curso {
@@ -13,7 +15,13 @@ public class Curso {
     private Long id;
     private String nombre;
     private String descripcion;
-    private String instructor;
+
+    //@JsonbTransient //Si no queremos incluir al instructor en la consulta
+    //@JsonIgnore //Es lo mismo que lo de arriba @JsonbTransient, pero aquí usamos Jackson easy
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "instructor_id")
+    private Instructor instructor;
+
     private Double duracion;
 
     public Curso() {
@@ -47,11 +55,11 @@ public class Curso {
         this.descripcion = descripcion;
     }
 
-    public String getInstructor() {
+    public Instructor getInstructor() {
         return instructor;
     }
 
-    public void setInstructor(String instructor) {
+    public void setInstructor(Instructor instructor) {
         this.instructor = instructor;
     }
 
